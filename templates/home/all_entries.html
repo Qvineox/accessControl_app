@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Просмотр заявок</title>
+{% endblock title %}
+
+
+{% block content %}
+<style>
+    .container {
+        /*border: 2px solid crimson;*/
+    }
+
+    div.table-title {
+        border-right: 2px solid silver;
+    }
+
+    .entry-timing {
+        margin: 0;
+    }
+
+    .entry-group {
+        margin-bottom: 2rem;
+    }
+
+    li.entry-row:hover {
+        background-color: lightgray;
+    }
+</style>
+
+<div class="container">
+    {% if perms.homes.add_entry %}
+    <h1 style="margin-top: 2rem">Управление заявками</h1>
+    <a class="btn btn-outline-primary" href="{% url 'add_entry' %}">Создать заявку</a>
+    {% endif %}
+
+
+    {% if entries %}
+    <h1 style="margin-top: 2rem">Список заявок</h1>
+    {% regroup entries by get_status_display as status_list %}
+
+
+    {% for status in status_list %}
+    <div class="card entry-group">
+        <div class="card-header {{ status.grouper }}"><h2>{{ status.grouper }} ({{ status.list|length }})</h2></div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-3 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-3">
+                            Исполнитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for entry in status.list %}
+            {% include 'home/entry_carcas.html' with item=entry %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="container" style="text-align: center">
+        <h2>Активных заявок нет!</h2>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}

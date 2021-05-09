@@ -1,0 +1,75 @@
+img.navbar-logo {
+    width: 2rem;
+    height: auto;
+}
+
+@font-face {
+    font-family: 'IBMplex';
+    src: url('../fonts/IBMPlexSerif-Regular.ttf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'IBMplex';
+    src: url('../fonts/IBMPlexSerif-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'IBMplex';
+    src: url('../fonts/IBMPlexSerif-Italic.ttf');
+    font-style: italic;
+}
+
+
+a, p, h1, h2, div {
+    font-family: "IBM Plex Serif";
+    font-weight: normal;
+}
+
+
+p.text {
+    font-size: 1.4rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+label {
+    font-size: 1.5rem;
+}
+
+.error {
+    background-color: #EA0037
+}
+
+a.hidden-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+div.Ожидание {
+    background-color: #FFBD73;
+}
+
+div.Подтверждено {
+    background-color: #37DB79;
+}
+
+div.Просрочено {
+    background-color: #FE3F44;
+}
+
+div.Отозвано {
+    background-color: #33CDC7;
+}
+
+div.Активно {
+    background-color: #FFEB73;
+}

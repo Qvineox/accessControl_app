@@ -1,0 +1,74 @@
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <style>
+        a.profile:hover p {
+            color: azure;
+        }
+
+        a.logout:hover p {
+            color: azure;
+        }
+    </style>
+
+    {% block title %}
+    {% endblock title %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <a class="navbar-brand" href="#"><img class="navbar-logo" src="{% static 'svg/locked-shield.svg' %}"
+                                              alt="lock-logo"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'home' %}">Панель<span class="sr-only">(current)</span></a>
+                </li>
+                {% if perms.home.view_entry %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'entries' %}">Заявки<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+                {% if perms.resources.view_resource %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'resources' %}">Ресурсы<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+            </ul>
+            {% if user.is_authenticated %}
+
+            {% if perms.home.add_entry %}
+            <a class="btn btn-outline-success profile" href="{% url 'add_entry' %}">
+                <p style="margin: 0">Добавить заявку</p>
+            </a>
+            {% endif %}
+
+            <a class="btn btn-outline-primary profile" href="{% url 'profile' %}" style="margin-left: 0.2rem">
+                <p style="margin: 0">{{ user.first_name }} {{ user.last_name }}</p>
+            </a>
+            <a class="btn btn-outline-secondary logout" href="{% url 'logout' %}" style="margin-left: 0.2rem">
+                <p style="margin: 0">Выйти</p>
+
+            </a>
+            {% else %}
+
+            <a class="btn btn-outline-secondary " href="{% url 'login' %}">Login</a>
+
+            {% endif %}
+        </div>
+    </nav>
+</head>
+<body>
+{% block content %}
+{% endblock content %}
+</body>
+</html>

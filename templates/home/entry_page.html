@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Заявка №{{ entry.id }}</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+    .managing {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+</style>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Заявка №
+            {{ entry.id }} от
+            {{ entry.created_at|date:"d.m.y" }}
+            - {{ entry.created_at|time:"H:i:s" }}</h1>
+            <h1 style="display: inline-block; float: right">{{ entry.get_status_display }}</h1></div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Заявитель</p>
+                        <h1>{{ entry.author }}</h1>
+                    </div>
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Исполнитель</p>
+                        <h1>{{ entry.executor }}</h1>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Дата предоставления доступа</p>
+                        <h1>{{ entry.granted_at }}</h1>
+                    </div>
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Дата отзыва доступа</p>
+                        <h1>{{ entry.expired_at }}</h1>
+                    </div>
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Длительность</p>
+                        <h1>{{ entry.duration }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Ресурс доступа</p>
+                        <h1>{{ entry.resource }}</h1>
+                    </div>
+                    {% if entry.resource.DNS_address %}
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">DNS-адрес</p>
+                        <h1>{{ entry.resource.DNS_address }}</h1>
+                    </div>
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Дата ввода</p>
+                        <h1>{{ entry.resource.created_at }}</h1>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if entry.resource.facility %}
+                <div class="row">
+                    <div class="col-4">
+                        <p class="label" style="margin: 0">Объект доступа</p>
+                        <h1>{{ entry.resource.facility }}</h1>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Владелец</p>
+                        <h1>{{ entry.resource.owner }}</h1>
+                    </div>
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Администратор</p>
+                        <h1>{{ entry.resource.admin }}</h1>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if perms.home.change_entry_status and entry.status != entry.RECALLED %}
+    <div class="card managing" style="margin-top: 2rem; width: fit-content; min-width: 30%">
+        <div class="card-header">
+            <h1>Управление</h1>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row">
+                    {% csrf_token %}
+                    {% if entry.status == entry.PENDING %}
+                    <div class="col-6">
+                        <button type="submit" name="action" value="activate" class="btn btn-success">
+                            <h2>Подтвердить</h2>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% if entry.status != entry.RECALLED %}
+                    <div class="col-6">
+                        <button type="submit" name="action" value="recall" style="float: right"
+                                class="btn btn-warning btn-managing">
+                            <h2>Отозвать</h2>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

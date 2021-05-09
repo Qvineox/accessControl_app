@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Создание заявки</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+</style>
+
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Новая заявка от
+                {{ current_time|date:"d.m.y" }} - {{ current_time|time:"H:i:s" }}</h1>
+                <h1 style="display: inline-block; float: right">{{ entry.get_status_display }}</h1></div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="label" style="margin: 0">Заявитель</p>
+                            <input class="form-control" id="author" value="{{ user.employee }}"
+                                   type="text" readonly>
+                            <input class="form-control" name="author" value="{{ user.employee.id }}"
+                                   type="text" readonly hidden>
+                        </div>
+                        <div class="col-6">
+                            <p class="label" style="margin: 0">Исполнитель</p>
+                            <select class="form-control" id="executor" name="executor" required>
+                                {% regroup employees by division as divisions %}
+
+                                {% for division in divisions %}
+                                <optgroup label="{{ division.grouper|default:'Без отдела' }}">
+                                    {% for employee in division.list %}
+                                    <option value="{{ employee.id }}">{{ employee }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2rem">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Дата предоставления доступа</p>
+                            <input name="granted_at" class="form-control" type="datetime-local" required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Дата отзыва доступа</p>
+                            <input name="expired_at" class="form-control" type="datetime-local" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <p class="label" style="margin: 0">Ресурс доступа</p>
+                            <select name="resource" class="form-control" id="resource" required>
+                                {% regroup resources by facility as facilities %}
+
+                                {% for facility in facilities %}
+                                <optgroup label="{{ facility.grouper|default:'Без объекта' }}">
+                                    {% for resources in facility.list %}
+                                    <option value="{{ resources.id }}">{{ resources.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Статус заявки</p>
+                            <select name="status" class="form-control" id="status" required>
+                                <option value="PD" selected>Ожидание подтверждения</option>
+                                {% if perms.home.change_entry_status %}
+                                <option value="AP">Авто-подтверждение</option>
+                                <option value="AC">Авто-активация</option>
+                                {% else %}
+                                <option value="AP" disabled>Авто-подтверждение</option>
+                                <option value="AC" disabled>Авто-активация</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 1rem">
+            {% for message in messages %}
+            <button class="btn btn-danger" style="float: left" disabled>
+                {{ message }}
+            </button>
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-success" style="float: right; margin-left: 0.5rem">
+                Опубликовать
+            </button>
+            <button type="reset" class="btn btn-outline-primary" style="float: right">Сбросить</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

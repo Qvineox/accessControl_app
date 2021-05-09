@@ -1,0 +1,24 @@
+<li class="list-group-item entry-row">
+    <a class="hidden-link" href="{% url 'entry' entry_id=item.id %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-1">
+                    {{ item.id }}
+                </div>
+                <div class="col-3">
+                    {{ item.resource.name }}
+                </div>
+                <div class="col-2">
+                    <p class="entry-timing">от {{ item.granted_at|date:"d.m" }} {{ item.granted_at|time:"H:i" }}</p>
+                    <p class="entry-timing">до {{ item.expired_at|date:"d.m" }} {{ item.expired_at|time:"H:i" }}</p>
+                </div>
+                <div class="col-3">
+                    {{ item.author }}
+                </div>
+                <div class="col-3">
+                    {{ item.executor }}
+                </div>
+            </div>
+        </div>
+    </a>
+</li>
