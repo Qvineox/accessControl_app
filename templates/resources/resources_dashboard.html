@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>Панель ресурсов</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+    li.entry-row:hover {
+        background-color: lightgray;
+    }
+
+    div.table-title {
+        border-right: 2px solid silver;
+    }
+</style>
+
+<div class="container-lg" style="margin: 2rem 10rem">
+    {% if perms.resources.add_resource %}
+    <h1 style="margin-top: 2rem">Управление ресурсами</h1>
+    <a class="btn btn-outline-primary" href="{% url 'add_resource' %}">Создать ресурс</a>
+    {% if perms.resources.add_facility %}
+    <a class="btn btn-outline-primary" href="{% url 'add_facility' %}">Создать объект доступа</a>
+    {% endif %}
+    {% endif %}
+
+    {% regroup resources by facility as facilities %}
+    <div class="card entry-group" style="margin-top: 3rem">
+        <div class="card-header"><h1>Все доступные ресурсы - (Всего: {{ resources|length }})</h1>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container-lg">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Наименование
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты создания
+                        </div>
+                        <div class="col-3 table-title">
+                            Администратор
+                        </div>
+                        <div class="col-3">
+                            Владелец
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for facility in facilities %}
+            <li class="list-group-item">
+                <div class="container-lg">
+                    {% if facility.grouper == None %}
+                    <h2>Без объекта</h2>
+                    {% else %}
+                    <h2>{{ facility.grouper }}</h2>
+                    {% endif %}
+                </div>
+            </li>
+            {% for resource in facility.list %}
+            {% include 'resources/resource_carcas.html' with item=resource %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Доступных есурсов нет</p>
+                </div>
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

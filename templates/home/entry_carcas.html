@@ -9,8 +9,8 @@
                     {{ item.resource.name }}
                 </div>
                 <div class="col-2">
-                    <p class="entry-timing">от {{ item.granted_at|date:"d.m" }} {{ item.granted_at|time:"H:i" }}</p>
-                    <p class="entry-timing">до {{ item.expired_at|date:"d.m" }} {{ item.expired_at|time:"H:i" }}</p>
+                    <p style="margin: 0" class="entry-timing">от {{ item.granted_at|date:"d.m" }} {{ item.granted_at|time:"H:i" }}</p>
+                    <p style="margin: 0" class="entry-timing">до {{ item.expired_at|date:"d.m" }} {{ item.expired_at|time:"H:i" }}</p>
                 </div>
                 <div class="col-3">
                     {{ item.author }}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Фильтрация заявок</title>
+{% endblock title %}
+
+
+{% block content %}
+<style>
+    p.label {
+        opacity: 70%;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<div class="container-lg" style="margin: 2rem 10rem">
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">
+                <h1 style="font-size: 2rem">Настройки агрегации</h1>
+            </div>
+            <div class="card-body">
+                <div class="container-lg">
+                    <div class="row">
+                        <div class="col-4">
+                            <p class="label">Дата начала выборки</p>
+                            <input name="granted_at" class="form-control" type="datetime-local" required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label">Дата конца выборки</p>
+                            <input name="expired_at" class="form-control" type="datetime-local" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2rem">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Исполнитель</p>
+                            <select class="form-control" id="executor" name="executor">
+                                <option value="" selected>Не указан</option>
+                                {% regroup employees by division as divisions %}
+
+                                {% for division in divisions %}
+                                <optgroup label="{{ division.grouper|default:'Без отдела' }}">
+                                    {% for employee in division.list %}
+                                    <option value="{{ employee.id }}">{{ employee }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Заявитель</p>
+                            <select class="form-control" id="author" name="author">
+                                <option value="" selected>Не указан</option>
+                                {% regroup employees by division as divisions %}
+
+                                {% for division in divisions %}
+                                <optgroup label="{{ division.grouper|default:'Без отдела' }}">
+                                    {% for employee in division.list %}
+                                    <option value="{{ employee.id }}">{{ employee }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2rem">
+                        <div class="col-6">
+                            <p class="label">Ресурс доступа</p>
+                            <select name="resource" class="form-control" id="resource" size="6" multiple required>
+                                <option value="" selected>Не указан</option>
+                                {% regroup resources by facility as facilities %}
+
+                                {% for facility in facilities %}
+                                <optgroup label="{{ facility.grouper|default:'Без объекта' }}">
+                                    {% for resources in facility.list %}
+                                    <option value="{{ resources.id }}">{{ resources.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 3rem">
+                        <div class="col-4">
+                            <button style="display: inline-block" type="submit" class="btn btn-success">Получить
+                                выборку
+                            </button>
+                            <button style="display: inline-block" type="reset" class="btn btn-secondary">Сбросить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for message in messages %}
+            <button class="btn btn-danger" style="float: left; margin-top: 1rem" disabled>
+                {{ message }}
+            </button>
+            {% endfor %}
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+<li class="list-group-item entry-row">
+    <a class="hidden-link" href="{% url 'resource' resource_id=item.id %}">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-1">
+                    {{ item.id }}
+                </div>
+                <div class="col-3">
+                    {{ item.name }}
+                </div>
+                <div class="col-2">
+                    <p style="margin: 0" class="entry-timing">{{ item.created_at|date:"d.m.Y" }}</p>
+                </div>
+                <div class="col-3">
+                    {% if item.admin %}
+                    {{ item.admin }}
+                    {% else %}
+                    Не назначен
+                    {% endif %}
+                </div>
+                <div class="col-3">
+                    {{ item.owner }}
+                </div>
+            </div>
+        </div>
+    </a>
+</li>

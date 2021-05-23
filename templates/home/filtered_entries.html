@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Фильтрация заявок</title>
+{% endblock title %}
+
+
+{% block content %}
+<style>
+    div.table-title {
+        border-right: 2px solid silver;
+    }
+
+    li.entry-row:hover {
+        background-color: lightgray;
+    }
+</style>
+
+<div class="container-lg" style="margin: 2rem 10rem">
+    <div class="card">
+        <div class="card-header">
+            <h1 style="font-size: 2rem">Результаты агрегации ({{ entries|length }})</h1>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container-lg">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-2 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-2 table-title">
+                            Исполнитель
+                        </div>
+                        <div class="col-2">
+                            Статус
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for item in entries %}
+            <li class="list-group-item entry-row">
+                <a class="hidden-link" href="{% url 'entry' entry_id=item.id %}">
+                    <div class="container-lg">
+                        <div class="row">
+                            <div class="col-1">
+                                #{{ item.id }}
+                            </div>
+                            <div class="col-3">
+                                {{ item.resource.name }}
+                            </div>
+                            <div class="col-2">
+                                <p>{{ item.granted_at|date:"d.m" }} {{ item.granted_at|time:"H:i" }} -
+                                    {{ item.expired_at|date:"d.m" }} {{ item.expired_at|time:"H:i" }}</p>
+                            </div>
+                            <div class="col-2">
+                                {{ item.author }}
+                            </div>
+                            <div class="col-2">
+                                {{ item.executor }}
+                            </div>
+                            <div class="col-2">
+                                {{ item.get_status_display }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% empty %}
+            <li class="list-group-item" style="text-align: center">
+                <h2>Заявок не найдено!</h2>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

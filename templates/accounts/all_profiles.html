@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>Панель работников</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+    li.entry-row:hover {
+        background-color: lightgray;
+    }
+
+    div.table-title {
+        border-right: 2px solid silver;
+    }
+</style>
+
+<div class="container">
+    {% if perms.accounts.add_employee %}
+    <h1 style="margin-top: 2rem">Управление профилями сотрудников</h1>
+    <a class="btn btn-outline-primary" href="{% url 'add_resource' %}">Создать профиль</a>
+    {% if perms.accounts.add_division %}
+    <a class="btn btn-outline-primary" href="{% url 'add_facility' %}">Создать отдел</a>
+    {% endif %}
+    {% endif %}
+
+    {% regroup employees by division as divisions %}
+    <div class="card entry-group" style="margin-top: 3rem">
+        <div class="card-header"><h1>Все профили сотрудников - (Всего: {{ employees|length }})</h1>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-6 table-title">
+                            Ф.И.О
+                        </div>
+                        <div class="col-3 table-title">
+                            Почта
+                        </div>
+                        <div class="col-2">
+                            Уровень доступа
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for division in divisions %}
+            <li class="list-group-item">
+                <div class="container">
+                    {% if division.grouper == None %}
+                    <h2>Без отдела</h2>
+                    {% else %}
+                    <h2>{{ division.grouper }}</h2>
+                    {% endif %}
+                </div>
+            </li>
+            {% for employee in division.list %}
+            {% include 'accounts/profile_carcas.html' with item=employee %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Доступных есурсов нет</p>
+                </div>
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock content %}

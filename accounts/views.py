@@ -1,8 +1,13 @@
 from accounts.forms import LoginForm
+from accounts.service import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from resources.service import *
+
+from .models import *
+from .service import *
 
 
 def login_view(request):
@@ -34,5 +39,20 @@ def logout_view(request):
     return redirect('login')
 
 
-def profile_view(request):
-    return request
+def profile_view(request, profile_id=None):
+    if profile_id:
+        profile = get_employee(profile_id)
+    else:
+        profile = get_user_profile(request.user)
+
+    return render(request, 'accounts/profile.html', {'profile': profile})
+
+
+def add_profile(request):
+    return render(request, 'accounts/profile_editor.html')
+
+
+def profiles_view(request):
+    employees = get_all_employees()
+
+    return render(request, 'accounts/all_profiles.html', {'employees': employees})

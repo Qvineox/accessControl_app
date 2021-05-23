@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Создание объекта доступа</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+</style>
+
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Новый объект
+                доступа</h1>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <p class="label" style="margin: 0">Наименование</p>
+                            <input type="text" class="form-control" name="name" id="name"
+                                   placeholder="Имя объекта доступа" maxlength="100" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2rem">
+                        <div class="col-6">
+                            <p class="label" style="margin: 0">Администратор</p>
+                            <select class="form-control" id="admin" name="admin">
+                                <option value="" selected>Не указан</option>
+                                {% regroup employees by division as divisions %}
+
+                                {% for division in divisions %}
+                                <optgroup label="{{ division.grouper|default:'Без отдела' }}">
+                                    {% for employee in division.list %}
+                                    <option value="{{ employee.id }}">{{ employee }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <p class="label" style="margin: 0">Владелец</p>
+                            <select class="form-control" id="owner" name="owner" required>
+                                {% regroup employees by division as divisions %}
+
+                                {% for division in divisions %}
+                                <optgroup label="{{ division.grouper|default:'Без отдела' }}">
+                                    {% for employee in division.list %}
+                                    <option value="{{ employee.id }}">{{ employee }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <p class="label" style="margin: 0">Расположение</p>
+                            <input type="text" class="form-control" id="location" maxlength="100" name="location"
+                                   placeholder="г. Москва" required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">DNS-адрес</p>
+                            <input type="text" class="form-control" id="dns_address" name="dns_address"
+                                   placeholder="example.com">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1rem">
+                        <div class="col-12">
+                            <p class="label" style="margin: 0">Описание</p>
+                            <textarea class="form-control" id="description" name="description" rows="3"
+                                      maxlength="500"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 1rem">
+            {% for message in messages %}
+            <button class="btn btn-danger" style="float: left" disabled>
+                {{ message }}
+            </button>
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-success" style="float: right; margin-left: 0.5rem">
+                Опубликовать
+            </button>
+            <button type="reset" class="btn btn-outline-primary" style="float: right">Сбросить</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

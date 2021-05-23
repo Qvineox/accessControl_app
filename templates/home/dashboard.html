@@ -1,10 +1,170 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
 <title>Панель наблюдения</title>
 {% endblock title %}
 
 {% block content %}
-<div class="container-lg">
-    <h1>Aloha!</h1>
+<style>
+    .status-card {
+        text-align: center;
+    }
+
+    li.entry-row {
+        cursor: pointer;
+    }
+
+    li.entry-row:hover {
+        background-color: lightgray;
+    }
+</style>
+
+<div class="container-lg" style="margin: 2rem 10rem">
+    <h1>Управление доступами</h1>
+    <div class="row" style="margin-top: 1rem">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header status-card">
+                    <h1>Активные<img style="width: 50px; margin-left: 1rem; vertical-align: middle;"
+                                     src="{% static 'svg/checked.svg' %}"></h1>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4" style="text-align: center">
+                                    Ресурс
+                                </div>
+                                <div class="col-5" style="text-align: center">
+                                    Исполнитель
+                                </div>
+                                <div class="col-3" style="text-align: center">
+                                    Закрытие
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% for item in dashboard_entries.active %}
+                    {% include 'home/dashboard_entry_carcas.html' %}
+                    {% empty %}
+                    <li class="list-group-item">
+                        <div class="container" style="text-align: center">
+                            <h2>Действующий доступов сейчас нет.</h2>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header status-card">
+                    <h1>Ожидающие<img style="width: 50px; margin-left: 1rem; vertical-align: middle;"
+                                      src="{% static 'svg/refresh.svg' %}"></h1>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4" style="text-align: center">
+                                    Ресурс
+                                </div>
+                                <div class="col-5" style="text-align: center">
+                                    Исполнитель
+                                </div>
+                                <div class="col-3" style="text-align: center">
+                                    Закрытие
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% for item in dashboard_entries.pending %}
+                    {% include 'home/dashboard_entry_carcas.html' %}
+                    {% empty %}
+                    <li class="list-group-item">
+                        <div class="container" style="text-align: center">
+                            <h2>Нет заявок для рассмотрения.</h2>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header status-card">
+                    <h1>Истекшие<img style="width: 50px; margin-left: 1rem; vertical-align: middle;"
+                                     src="{% static 'svg/danger-mark.svg' %}"></h1>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4" style="text-align: center">
+                                    Ресурс
+                                </div>
+                                <div class="col-5" style="text-align: center">
+                                    Исполнитель
+                                </div>
+                                <div class="col-3" style="text-align: center">
+                                    Закрытие
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% for item in dashboard_entries.expired %}
+                    {% include 'home/dashboard_entry_carcas.html' %}
+                    {% empty %}
+                    <li class="list-group-item">
+                        <div class="container" style="text-align: center">
+                            <h2>Все просроченные доступы отозваны.</h2>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% if dashboard_entries.approved %}
+    <div class="row" style="margin-top: 2rem">
+        <div class="card" style="margin: 0 auto">
+            <div class="card-header" style="text-align: center; background-color: #F7F7F7">
+                <h1>Одобренные заявки в неактивном состоянии: {{ dashboard_entries.approved|length }}</h1>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-1 table-title">
+                                #ID
+                            </div>
+                            <div class="col-3 table-title">
+                                Ресурс
+                            </div>
+                            <div class="col-2 table-title">
+                                Даты действия
+                            </div>
+                            <div class="col-3 table-title">
+                                Доверенный
+                            </div>
+                            <div class="col-3">
+                                Исполнитель
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% for item in dashboard_entries.approved %}
+                {% include 'home/entry_carcas.html' %}
+                {% empty %}
+                <li class="list-group-item">
+                    <div class="container" style="text-align: center">
+                        <h2>Действующий доступов сейчас нет.</h2>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock content %}

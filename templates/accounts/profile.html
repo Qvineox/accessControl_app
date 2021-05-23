@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Профиль №{{ profile.id }}</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+
+</style>
+
+<div class="container-lg">
+    <div class="card">
+        <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Профиль №
+            {{ profile.id }}</h1></div>
+        <div class="card-body">
+            <div class="container-lg">
+                <div class="row">
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Фамилия</p>
+                        <h1>{{ profile.last_name }}</h1>
+                    </div>
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Имя</p>
+                        <h1>{{ profile.first_name }}</h1>
+                    </div>
+                    {% if profile.middle_name %}
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Отчество</p>
+                        <h1>{{ profile.middle_name }}</h1>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Электронная почта</p>
+                        <h1>{{ profile.email|default:"Не указана" }}</h1>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Отдел</p>
+                        {% if profile.division == None %}
+                        <h1>Не назначен</h1>
+                        {% else %}
+                        <h1>{{ profile.division.name }}</h1>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="container-lg">
+                {% if profile.account %}
+                <div class="row" style="margin-bottom: 2rem">
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Учетная запись</p>
+                        <h1>{{ profile.account }}</h1>
+                    </div>
+                    {% if profile.account %}
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Уровень учетной записи</p>
+                        <h1>{% if profile.account %}
+                            {% if profile.account.is_staff %}
+                            {% if profile.account.is_superuser %}
+                            Админ
+                            {% else %}
+                            Оператор
+                            {% endif %}
+                            {% else %}
+                            Пользователь
+                            {% endif %}
+                            {% endif %}</h1>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Последний вход</p>
+                        <h1>{{ profile.account.last_login }}</h1>
+                    </div>
+                    <div class="col-3">
+                        <p class="label" style="margin: 0">Дата регистрации</p>
+                        <h1>{{ profile.account.date_joined }}</h1>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

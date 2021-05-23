@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Ресурс №{{ resource.id }}</title>
+{% endblock title %}
+
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+
+</style>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Ресурс №
+            {{ resource.id }}</h1>
+            <h1 style="display: inline-block; float: right">{{ entry.get_status_display }}</h1></div>
+        <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Наименование</p>
+                        <h1>{{ resource.name }}</h1>
+                    </div>
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Объект</p>
+                        {% if resource.facility == None %}
+                        <h1>Не назначен</h1>
+                        {% else %}
+                        <h1>{{ resource.facility }}</h1>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Дата создания</p>
+                        <h1>{{ resource.created_at }}</h1>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2rem">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Администратор</p>
+                        {% if resource.admin == None %}
+                        <h1>Не назначен</h1>
+                        {% else %}
+                        <h1>{{ resource.admin }}</h1>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Владелец</p>
+                        <h1>{{ resource.owner }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="container">
+                {% if resource.description %}
+                <div class="row" style="margin-bottom: 2rem">
+                    <div class="col">
+                        <p class="label" style="margin: 0">Описание</p>
+                        <h1>{{ resource.description }}</h1>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">DNS-адрес</p>
+                        {% if resource.DNS_address == None %}
+                        <h1>Не назначен</h1>
+                        {% else %}
+                        <h1>{{ resource.DNS_address }}</h1>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <p class="label" style="margin: 0">Дата последнего доступа</p>
+                        <h1>{{ resource.latest_access }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

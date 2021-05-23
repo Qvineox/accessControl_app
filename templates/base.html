@@ -38,9 +38,19 @@
                     <a class="nav-link" href="{% url 'entries' %}">Заявки<span class="sr-only">(current)</span></a>
                 </li>
                 {% endif %}
+                {% if perms.home.filter_entry %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'filter_entries' %}">Сводка<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
                 {% if perms.resources.view_resource %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'resources' %}">Ресурсы<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+                {% if perms.accounts.view_employee %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'profiles' %}">Работники<span class="sr-only">(current)</span></a>
                 </li>
                 {% endif %}
             </ul>

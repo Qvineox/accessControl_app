@@ -1,0 +1,32 @@
+<li class="list-group-item entry-row">
+    <a class="hidden-link" href="{% url 'profile' profile_id=item.id %}">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-1" style="text-align: center">
+                    {{ item.id }}
+                </div>
+                <div class="col-6">
+                    {{ item.last_name|default:"" }}
+                    {{ item.first_name|default:"" }}
+                    {{ item.middle_name|default:"" }}
+                </div>
+                <div class="col-3">
+                    {{ item.email|default:"Не указано" }}
+                </div>
+                <div class="col-2">
+                    {% if item.account %}
+                    {% if item.account.is_staff %}
+                    {% if item.account.is_superuser %}
+                    Админ
+                    {% else %}
+                    Оператор
+                    {% endif %}
+                    {% else %}
+                    Пользователь
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </a>
+</li>

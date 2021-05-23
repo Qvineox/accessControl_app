@@ -28,7 +28,7 @@
 </style>
 
 <div class="container">
-    {% if perms.homes.add_entry %}
+    {% if perms.home.add_entry %}
     <h1 style="margin-top: 2rem">Управление заявками</h1>
     <a class="btn btn-outline-primary" href="{% url 'add_entry' %}">Создать заявку</a>
     {% endif %}
@@ -36,12 +36,11 @@
 
     {% if entries %}
     <h1 style="margin-top: 2rem">Список заявок</h1>
-    {% regroup entries by get_status_display as status_list %}
 
-
-    {% for status in status_list %}
+    {% if entries.EX %}
     <div class="card entry-group">
-        <div class="card-header {{ status.grouper }}"><h2>{{ status.grouper }} ({{ status.list|length }})</h2></div>
+        <div class="card-header Просрочено"><h2>Просроченные доступы - (Всего: {{ entries.EX|length }})</h2>
+        </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <div class="container">
@@ -64,17 +63,156 @@
                     </div>
                 </div>
             </li>
-            {% for entry in status.list %}
+            {% for entry in entries.EX %}
             {% include 'home/entry_carcas.html' with item=entry %}
             {% endfor %}
         </ul>
     </div>
-    {% endfor %}
-    {% else %}
-    <div class="container" style="text-align: center">
-        <h2>Активных заявок нет!</h2>
+    {% endif %}
+
+    {% if entries.PD %}
+    <div class="card entry-group">
+        <div class="card-header Ожидание"><h2>Ожидающие подтверждения доступы - (Всего: {{ entries.PD|length }})</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-3 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-3">
+                            Исполнитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for entry in entries.PD %}
+            {% include 'home/entry_carcas.html' with item=entry %}
+            {% endfor %}
+        </ul>
     </div>
     {% endif %}
 
+    <div class="card entry-group">
+        <div class="card-header Активно"><h2>Активные в данный момент доступы - (Всего: {{ entries.AC|length }})</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-3 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-3">
+                            Исполнитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for entry in entries.AC %}
+            {% include 'home/entry_carcas.html' with item=entry %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Активных доступов нет!</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card entry-group">
+        <div class="card-header Подтверждено"><h2>Допущенные до активации доступы - (Всего: {{ entries.AP|length }})</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-3 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-3">
+                            Исполнитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for entry in entries.AP %}
+            {% include 'home/entry_carcas.html' with item=entry %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Подтвержденных доступов нет!</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card entry-group" style="margin-top: 5rem">
+        <div class="card-header Отозвано"><h2>Отозванные доступы - (Всего: {{ entries.RC|length }})</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-3 table-title">
+                            Ресурс
+                        </div>
+                        <div class="col-2 table-title">
+                            Даты действия
+                        </div>
+                        <div class="col-3 table-title">
+                            Доверенный
+                        </div>
+                        <div class="col-3">
+                            Исполнитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for entry in entries.RC %}
+            {% include 'home/entry_carcas.html' with item=entry %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Подтвержденных доступов нет!</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
 {% endblock content %}
