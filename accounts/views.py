@@ -1,4 +1,4 @@
-from accounts.forms import LoginForm
+from accounts.forms import *
 from accounts.service import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -48,11 +48,57 @@ def profile_view(request, profile_id=None):
     return render(request, 'accounts/profile.html', {'profile': profile})
 
 
+def division_view(request, division_id):
+    division = get_division(division_id)
+    employees = get_all_employees().filter(division=division)
+    return render(request, 'accounts/division.html', {'division': division, 'employees': employees})
+
+
 def add_profile(request):
-    return render(request, 'accounts/profile_editor.html')
+    divisions = get_all_divisions()
+
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST)
+
+        if form.is_valid():
+            if form.cleaned_data['username']:
+                if check_username_availability(form.cleaned_data['username']):
+                    register_new_user(username=form.cleaned_data['username'],
+                                      password=form.cleaned_data['password'],
+                                      is_staff=form.cleaned_data['is_staff'],
+                                      email=form.cleaned_data['email'],
+                                      last_name=form.cleaned_data['last_name'],
+                                      first_name=form.cleaned_data['first_name'])
+                else:
+                    messages.error(request, 'Учетная запись с таким именем пользователя уже существует!')
+                    return render(request, 'accounts/profile_editor.html', {'divisions': divisions})
+
+            create_new_employee(last_name=form.cleaned_data['last_name'],
+                                first_name=form.cleaned_data['first_name'],
+                                middle_name=form.cleaned_data['middle_name'],
+                                email=form.cleaned_data['email'],
+                                division=form.cleaned_data['division'],
+                                username=form.cleaned_data['username'])
+            return redirect('profiles')
+
+    return render(request, 'accounts/profile_editor.html', {'divisions': divisions})
+
+
+def add_division(request):
+    if request.method == 'POST':
+        form = DivisionForm(request.POST)
+
+        if form.is_valid():
+            create_new_division(name=form.cleaned_data['name'], head=form.cleaned_data['head'])
+            return redirect('profiles')
+
+    employees = get_all_employees()
+
+    return render(request, 'accounts/division_editor.html', {'employees': employees})
 
 
 def profiles_view(request):
     employees = get_all_employees()
+    divisions = get_all_divisions()
 
-    return render(request, 'accounts/all_profiles.html', {'employees': employees})
+    return render(request, 'accounts/all_profiles.html', {'employees': employees, 'divisions': divisions})

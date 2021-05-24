@@ -59,7 +59,7 @@ def entry_view(request, entry_id):
                 entry.status = entry.RECALLED
                 entry.save()
             elif request.POST['action'] == 'activate':
-                entry.status = entry.ACTIVE
+                entry.status = entry.APPROVED
                 entry.save()
 
     entry.duration = entry.expired_at - entry.granted_at

@@ -1,0 +1,17 @@
+<li class="list-group-item entry-row">
+    <a class="hidden-link" href="{% url 'division' division_id=item.id %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-1">
+                    {{ item.id }}
+                </div>
+                <div class="col-6">
+                    {{ item.name }}
+                </div>
+                <div class="col-5">
+                    {{ item.head }}
+                </div>
+            </div>
+        </div>
+    </a>
+</li>

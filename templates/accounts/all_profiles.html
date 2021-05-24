@@ -18,13 +18,13 @@
 <div class="container">
     {% if perms.accounts.add_employee %}
     <h1 style="margin-top: 2rem">Управление профилями сотрудников</h1>
-    <a class="btn btn-outline-primary" href="{% url 'add_resource' %}">Создать профиль</a>
+    <a class="btn btn-outline-primary" href="{% url 'add_profile' %}">Создать профиль</a>
     {% if perms.accounts.add_division %}
-    <a class="btn btn-outline-primary" href="{% url 'add_facility' %}">Создать отдел</a>
+    <a class="btn btn-outline-primary" href="{% url 'add_division' %}">Создать отдел</a>
     {% endif %}
     {% endif %}
 
-    {% regroup employees by division as divisions %}
+    {% regroup employees by division as divisions_list %}
     <div class="card entry-group" style="margin-top: 3rem">
         <div class="card-header"><h1>Все профили сотрудников - (Всего: {{ employees|length }})</h1>
         </div>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </li>
-            {% for division in divisions %}
+            {% for division in divisions_list %}
             <li class="list-group-item">
                 <div class="container">
                     {% if division.grouper == None %}
@@ -66,6 +66,37 @@
                 </div>
             </li>
             {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="card entry-group" style="margin-top: 3rem; margin-bottom: 5rem">
+        <div class="card-header"><h1>Все отделы - (Всего: {{ divisions|length }})</h1>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 table-title">
+                            #ID
+                        </div>
+                        <div class="col-6 table-title">
+                            Название
+                        </div>
+                        <div class="col-5">
+                            Руководитель
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% for division in divisions %}
+            {% include 'accounts/division_carcas.html' with item=division %}
+            {% empty %}
+            <li class="list-group-item">
+                <div class="container" style="text-align: center">
+                    <p>Доступных есурсов нет</p>
+                </div>
+            </li>
             {% endfor %}
         </ul>
     </div>

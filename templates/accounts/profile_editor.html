@@ -1,10 +1,166 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}
+<title>Создание профиля</title>
+{% endblock title %}
 
-</body>
-</html>
+{% block content %}
+<style>
+
+    p.label {
+        opacity: 70%;
+    }
+
+</style>
+
+<div class="container-lg" style="">
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header {{ entry.get_status_display }} "><h1 style="display: inline-block">Новый
+                профиль</h1>
+            </div>
+            <div class="card-body">
+                <div class="container-lg">
+                    <div class="row">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Фамилия сотрудника</p>
+                            <input type="text" class="form-control" name="last_name" id="last_name"
+                                   placeholder="Иванов" maxlength="50" required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Имя сотрудника</p>
+                            <input type="text" class="form-control" name="first_name" id="first_name"
+                                   placeholder="Иван" maxlength="50" required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Отчество сотрудника</p>
+                            <input type="text" class="form-control" name="middle_name" id="middle_name"
+                                   placeholder="Иванович" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1rem">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Почта</p>
+                            <input type="text" class="form-control" name="email" id="email"
+                                   placeholder="ivanov@mail.com" maxlength="100" required>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1rem">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Отдел</p>
+                            <select id="division" name="division" class="form-control">
+                                <option value="" selected>Без отдела</option>
+                                {% for division in divisions %}
+                                <option value="{{ division.id }}">{{ division.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="container-lg">
+                    <div class="row">
+                        <div class="col-8">
+                            <button class="btn btn-primary" id="enableUserBtn" onclick="enableUserForm()" type="button">
+                                Создать связанного пользователя системы
+                            </button>
+                            <button class="btn btn-danger" id="disableUserBtn" onclick="disableUserForm()" type="button"
+                                    hidden>
+                                Отменить создание пользователя
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1rem">
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Имя пользователя</p>
+                            <input type="text" class="form-control" name="username" id="username"
+                                   maxlength="150" disabled required>
+                        </div>
+                        <div class="col-4">
+                            <p class="label" style="margin: 0">Уровень доступа</p>
+                            <select class="form-control" id="status" name="status" disabled>
+                                <option value="user" selected>Пользователь</option>
+                                <option value="operator">Оператор</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2rem">
+                        <div class="col-3">
+                            <p class="label" style="margin: 0">Пароль</p>
+                            <input type="password" class="form-control" name="password" id="password"
+                                   maxlength="20" disabled required>
+                        </div>
+                        <div class="col-3">
+                            <p class="label" style="margin: 0">Повтор пароля</p>
+                            <input type="password" class="form-control" onchange="checkPassword()"
+                                   aria-describedby="passwordRepeatValidation"
+                                   name="password_repeat"
+                                   id="password_repeat"
+                                   maxlength="20" disabled required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-lg" style="margin-top: 1rem">
+
+            <button type="submit" id="submit-btn" class="btn btn-outline-success"
+                    style="float: right; margin-left: 0.5rem; margin-right: 1rem">
+                Опубликовать
+            </button>
+            <button type="reset" class="btn btn-outline-primary" style="float: right">Сбросить</button>
+            {% for message in messages %}
+            <button class="btn btn-danger" style="float: right; margin-right: 0.5rem" disabled>
+                {{ message }}
+            </button>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function enableUserForm() {
+        document.getElementById('username').removeAttribute('disabled')
+        document.getElementById('status').removeAttribute('disabled')
+        document.getElementById('password').removeAttribute('disabled')
+        document.getElementById('password_repeat').removeAttribute('disabled')
+
+        document.getElementById('disableUserBtn').removeAttribute('hidden')
+        document.getElementById('enableUserBtn').setAttribute('hidden', 'hidden')
+    }
+
+    function disableUserForm() {
+        document.getElementById('username').value = null
+        document.getElementById('password').value = null
+        document.getElementById('password_repeat').value = null
+
+        document.getElementById('username').setAttribute('disabled', 'disabled')
+        document.getElementById('status').setAttribute('disabled', 'disabled')
+        document.getElementById('password').setAttribute('disabled', 'disabled')
+        document.getElementById('password_repeat').setAttribute('disabled', 'disabled')
+        document.getElementById('password').className = 'form-control'
+        document.getElementById('password_repeat').className = 'form-control'
+
+        document.getElementById('enableUserBtn').removeAttribute('hidden')
+        document.getElementById('disableUserBtn').setAttribute('hidden', 'hidden')
+
+        document.getElementById('submit-btn').removeAttribute('disabled')
+    }
+
+    function checkPassword() {
+        if (document.getElementById('password').value !== document.getElementById('password_repeat').value) {
+            document.getElementById('password').className = 'form-control is-invalid'
+            document.getElementById('password_repeat').className = 'form-control is-invalid'
+
+            document.getElementById('submit-btn').setAttribute('disabled', 'disabled')
+        } else {
+            document.getElementById('password').className = 'form-control is-valid'
+            document.getElementById('password_repeat').className = 'form-control is-valid'
+
+            document.getElementById('submit-btn').removeAttribute('disabled')
+        }
+
+    }
+</script>
+{% endblock content %}
